@@ -32,7 +32,8 @@ def update_plot(_, scater_plot, data_queue):
             and serial_protocol.REPORT_TAIL in serial_protocol_line
         ):
             # Extract the target values
-            all_target_values = serial_protocol.read_radar_data(serial_protocol_line)
+            all_target_values = serial_protocol.read_radar_data(
+                serial_protocol_line)
 
             if all_target_values is None:
                 continue
@@ -61,7 +62,8 @@ def update_plot(_, scater_plot, data_queue):
             # targets_y.extend(current_targets_y)
 
             # Update the scatter plot
-            scater_plot.set_offsets(list(zip(current_targets_x, current_targets_y)))
+            scater_plot.set_offsets(
+                list(zip(current_targets_x, current_targets_y)))
 
     return (scater_plot,)
 
@@ -106,4 +108,8 @@ def draw_and_update(port: str, baudrate: int):
 
 
 if __name__ == "__main__":
-    draw_and_update(port="/dev/ttyUSB0", baudrate=256000)
+    from generic_args_parser import parse_args
+
+    args = parse_args()
+
+    draw_and_update(port=args.get("port"), baudrate=args.get("baudrate"))

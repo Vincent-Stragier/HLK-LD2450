@@ -6,6 +6,13 @@ import serial_protocol
 
 
 def print_targets(port: str, baudrate: int, continuous: bool = True):
+    """Print the information extracted from the LD2450.
+
+    Args:
+        port (str): serial port to connect to.
+        baudrate (int): baudrate of the serial port.
+        continuous (bool, optional): wether or not to measure continuously. Defaults to True.
+    """
     try:
         # Open the serial port
         with serial.Serial(port, baudrate, timeout=1) as ser:
@@ -18,35 +25,20 @@ def print_targets(port: str, baudrate: int, continuous: bool = True):
                 if all_target_values is None:
                     continue
 
-                (
-                    target1_x,
-                    target1_y,
-                    target1_speed,
-                    target1_distance_res,
-                    target2_x,
-                    target2_y,
-                    target2_speed,
-                    target2_distance_res,
-                    target3_x,
-                    target3_y,
-                    target3_speed,
-                    target3_distance_res,
-                ) = all_target_values
-
                 # Print the interpreted information for all targets
                 print(
-                    f"Target 1 x-coordinate: {target1_x} mm\n"
-                    f"Target 1 y-coordinate: {target1_y} mm\n"
-                    f"Target 1 speed: {target1_speed} cm/s\n"
-                    f"Target 1 distance res: {target1_distance_res} mm\n\n"
-                    f"Target 2 x-coordinate: {target2_x} mm\n"
-                    f"Target 2 y-coordinate: {target2_y} mm\n"
-                    f"Target 2 speed: {target2_speed} cm/s\n"
-                    f"Target 2 distance res: {target2_distance_res} mm\n\n"
-                    f"Target 3 x-coordinate: {target3_x} mm\n"
-                    f"Target 3 y-coordinate: {target3_y} mm\n"
-                    f"Target 3 speed: {target3_speed} cm/s\n"
-                    f"Target 3 distance res: {target3_distance_res} mm"
+                    f"Target 1 x-coordinate: {all_target_values[0]} mm\n"
+                    f"Target 1 y-coordinate: {all_target_values[1]} mm\n"
+                    f"Target 1 speed: {all_target_values[2]} cm/s\n"
+                    f"Target 1 distance res: {all_target_values[3]} mm\n\n"
+                    f"Target 2 x-coordinate: {all_target_values[4]} mm\n"
+                    f"Target 2 y-coordinate: {all_target_values[5]} mm\n"
+                    f"Target 2 speed: {all_target_values[6]} cm/s\n"
+                    f"Target 2 distance res: {all_target_values[7]} mm\n\n"
+                    f"Target 3 x-coordinate: {all_target_values[8]} mm\n"
+                    f"Target 3 y-coordinate: {all_target_values[9]} mm\n"
+                    f"Target 3 speed: {all_target_values[10]} cm/s\n"
+                    f"Target 3 distance res: {all_target_values[11]} mm"
                 )
 
                 print("-" * 30)
@@ -56,4 +48,9 @@ def print_targets(port: str, baudrate: int, continuous: bool = True):
 
 
 if __name__ == "__main__":
-    print_targets(port="/dev/ttyUSB0", baudrate="256000", continuous=True)
+    from generic_args_parser import parse_args
+
+    args = parse_args()
+
+    print_targets(port=args.get("port"), baudrate=args.get(
+        "baudrate"), continuous=True)

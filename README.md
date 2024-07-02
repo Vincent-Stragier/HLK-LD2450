@@ -49,7 +49,7 @@ pip install -r  requirements.txt
 `print_targets.py` prints out the received data from the sensor (x, y, speed, distance resolution) of three targets:
 
 ```bash
-python print_targets.py
+sudo python print_targets.py -p /dev/ttyUSB0
 ```
 
 ![Print Demo](./gifs/targets_print.gif)
@@ -57,7 +57,7 @@ python print_targets.py
 `plot_targets.py` plots the received data from the sensor (x, y) of three targets:
 
 ```bash
-python plot_targets.py
+sudo python plot_targets.py -p /dev/ttyUSB0
 ```
 
 ![Plot Demo](./gifs/targets_plot.gif)
