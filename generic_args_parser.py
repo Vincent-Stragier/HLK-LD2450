@@ -17,7 +17,8 @@ def parse_args() -> dict:
         description="Serial port communication for the LD2450."
     )
 
-    # The arguments to parse are optional (the port as a string and baudrate as a positive integer)
+    # The arguments to parse are optional
+    # (the port as a string and baudrate as a positive integer)
     parser.add_argument(
         "-p",
         "--port",
@@ -34,18 +35,10 @@ def parse_args() -> dict:
         choices=VALID_BAUDRATES,
         help=(
             "The baudrate of the serial port."
-            # f"({', '.join(map(str, VALID_BAUDRATES))})."
         ),
     )
 
     args = parser.parse_args()
-
-    # baudrate = args.baudrate
-    # if baudrate not in VALID_BAUDRATES:
-    #     raise ValueError(
-    #         f"Invalid baudrate: {baudrate}\nValid baudrate values are: "
-    #         f"{', '.join(map(str, VALID_BAUDRATES))}."
-    #     )
 
     port = args.port
     current_ports = list(comport.device for comport in comports())

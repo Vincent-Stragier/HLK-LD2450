@@ -22,46 +22,6 @@ POSSIBLE_BAUDRATES = [
 ]
 
 
-def _send_command(
-    ser: serial.Serial,
-    intra_frame_length: bytes,
-    command_word: bytes,
-    command_value: bytes,
-) -> bytes:
-    """
-    Send a command to the radar (see docs 2.1.2)
-    Parameters:
-    - ser (serial.Serial): the serial port object
-    - intra_frame_length (bytes): the intra frame length
-    - command_word (bytes): the command word
-    - command_value (bytes): the command value
-    Returns:
-    - response (bytes): the response from the radar
-    """
-    # Create the command
-    command = (
-        COMMAND_HEADER
-        + intra_frame_length
-        + command_word
-        + command_value
-        + COMMAND_TAIL
-    )
-
-    ser.write(command)
-    return ser.read_until(COMMAND_TAIL)
-
-
-def _get_command_success(response: bytes) -> bool:
-    """
-    Check if the command was sent successfully
-    Parameters:
-    - response (bytes): the response from the radar
-    Returns:
-    - success (bool): True if the command was sent successfully, False otherwise
-    """
-    return int.from_bytes(response[8:10], byteorder="little", signed=True) == 0
-
-
 def send_command(
     ser: serial.Serial,
     intra_frame_length: bytes,
@@ -166,6 +126,7 @@ def single_target_tracking(ser: serial.Serial) -> bool:
         command_word=bytes.fromhex("80 00"),
         command_value=BYTES_FROM_HEX_EMPTY,
     )
+
     if command_success:
         print("Single target tracking mode enabled")
 
@@ -355,11 +316,15 @@ def restart_module(ser: serial.Serial) -> bool:
 def bluetooth_setup(ser: serial.Serial, bluetooth_on: bool = True) -> bool:
     """
     Set up the bluetooth of the radar (see docs 2.2.10)
+
     Parameters:
     - ser (serial.Serial): the serial port object
-    - bluetooth_on (bool): True if the bluetooth should be enabled, False otherwise
+    - bluetooth_on (bool): True if the bluetooth should be enabled,
+    False otherwise
+
     Returns:
-    - success (bool): True if the bluetooth was successfully set up, False otherwise
+    - success (bool): True if the bluetooth was successfully set up,
+    False otherwise
     """
     _, command_success = send_command(
         ser,
@@ -581,10 +546,10 @@ def read_radar_data(serial_port_line: bytes) -> tuple[12]:
             target_bytes[6:8], byteorder="little", signed=False
         )
 
-        # Substract 2^15 depending if negative or positive
-        x = x if x >= 0 else -(2**15) - x
-        y = y if y >= 0 else -(2**15) - y
-        speed = speed if speed >= 0 else -(2**15) - speed
+        # Subtract 2^15 depending if negative or positive
+        x = x if x >= 0 else - (2 ** 15) - x
+        y = y if y >= 0 else - (2 ** 15) - y
+        speed = speed if speed >= 0 else - (2 ** 15) - speed
 
         # Append target data to the list and flatten
         all_targets_data.extend([x, y, speed, distance_resolution])
